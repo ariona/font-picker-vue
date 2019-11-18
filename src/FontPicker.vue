@@ -11,7 +11,7 @@
             class="font-picker-list"
             :class="{expanded: state.expanded}">
             <div class="font-filter">
-                <input type="text" v-model="query" @keyup="onScroll" :placeholder="options.searchPlaceholder || 'Search Font'">
+                <input type="text" v-model="query" @keyup="onScroll" placeholder="Search">
             </div>
     		<ul v-if="state.loadingStatus === 'finished' && fontManager.fonts"
     			@scroll="onScroll">
@@ -193,8 +193,9 @@
              */
             toggleExpanded() {
                 this.setState({
-                    expanded: !this.state.expanded
+                    expanded: !this.state.expanded,
                 });
+                this.query= ''
             },
 
 			snakeCase(text) {
@@ -209,7 +210,7 @@
     }
 </script>
 
-<style lang="less">
+<style lang="scss">
 	.font-picker {
         position   : relative;
         display    : inline-block;
