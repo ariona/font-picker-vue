@@ -58,7 +58,7 @@
      */
     export default {
         props: ['activeFont', 'apiKey', 'options'],
-
+        name: 'font-picker',
         data() {
             return {
                 state: {
@@ -84,7 +84,7 @@
         mounted() {
 
             document.addEventListener( 'click', (event)=>{
-                if ( ! event.target.closest( '.font-picker' ) )
+                if ( ! event.target.closest( '.font-picker' ) && this.state.expanded )
                     this.toggleExpanded();
             } )
             // Determine selector suffix from font picker's name
@@ -108,8 +108,7 @@
                         errorText: '',
                         loadingStatus: 'finished'
                     });
-
-                    console.log( this.fontManager.fonts )
+                    
                 })
                 .catch((err) => {
                     // error while loading font list
