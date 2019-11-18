@@ -33,7 +33,7 @@
 
         data() {
             return {
-                apiKey: 'AIzaSyAOkdDlx49HCSBdu86oe8AD1Q7piIxlR6k',
+                apiKey: 'AIzaSyBWRHp4IDXAaudSFwz2Vvdz045Zq8XrSwM',
                 activeFont1: 'Open Sans',
                 activeFont2: 'Barlow',
             };

@@ -1,22 +1,28 @@
 <template>
 	<div :id="`font-picker${pickerSuffix}`" class="font-picker" :title="state.errorText">
 		<button class="dropdown-button" type="button"
-				:class="{expanded: state.expanded}"
+				:class="{'expanded': state.expanded}"
 				@click="toggleExpanded"
 				@keypress="toggleExpanded">
 			<p class="dropdown-font-name">{{state.activeFont}}</p>
 			<p class="dropdown-icon" :class="state.loadingStatus"></p>
 		</button>
-		<ul v-if="state.loadingStatus === 'finished' && fontManager.fonts"
-			:class="{expanded: state.expanded}"
-			@scroll="onScroll">
-			<li v-for="font in fontManager.fonts" :key="font.family">
-				<button type="button" class="font-abeezee"
+        <div
+            class="font-picker-list"
+            :class="{expanded: state.expanded}">
+            <div class="font-filter">
+                <input type="text" v-model="query" @keyup="onScroll" :placeholder="options.searchPlaceholder || 'Search Font'">
+            </div>
+    		<ul v-if="state.loadingStatus === 'finished' && fontManager.fonts"
+    			@scroll="onScroll">
+    			<li v-for="font in fontList" :key="font.family">
+    				<button type="button" class="font-abeezee"
 						:class="`font-${snakeCase(font.family)}${pickerSuffix} ${font.family === state.activeFont ? 'active-font' : ''}`"
 						@click="itemClick(font)"
 						@keypress="itemClick(font)">{{font.family}}</button>
-			</li>
-		</ul>
+    			</li>
+    		</ul>
+        </div>
 	</div>
 </template>
 
@@ -63,10 +69,24 @@
                 },
                 pickerSuffix: '',
                 fontManager: null,
+                query: '',
             };
         },
 
+        computed: {
+            fontList() {
+                return this.fontManager.fonts.filter( item => {
+                    return item.family.toLowerCase().indexOf( this.query.toLowerCase() ) !== -1
+                } )
+            }
+        },
+
         mounted() {
+
+            document.addEventListener( 'click', (event)=>{
+                if ( ! event.target.closest( '.font-picker' ) )
+                    this.toggleExpanded();
+            } )
             // Determine selector suffix from font picker's name
             if (this.options && this.options.name) {
                 this.pickerSuffix = `-${this.options.name}`;
@@ -88,6 +108,8 @@
                         errorText: '',
                         loadingStatus: 'finished'
                     });
+
+                    console.log( this.fontManager.fonts )
                 })
                 .catch((err) => {
                     // error while loading font list
@@ -188,16 +210,27 @@
     }
 </script>
 
-<style lang="scss">
+<style lang="less">
 	.font-picker {
-		position: relative;
-		display: inline-block;
-		width: 200px;
-		box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.2);
+        position   : relative;
+        display    : inline-block;
+        width      : 200px;
+        box-shadow : 1px 1px 3px rgba(0, 0, 0, 0.2);
 
 		* {
 			box-sizing: border-box;
 		}
+
+        .font-filter {
+            padding: 10px;
+            input {
+                width: 100%;
+                border: 1px solid #e3e3e3;
+                padding: 5px 10px;
+                font-size: inherit;
+                border-radius: 3px;
+            }
+        }
 
 		p {
 			margin: 0;
@@ -205,7 +238,7 @@
 		}
 
 		button {
-			background: none;
+			background: transparent;
 			border: 0;
 			color: inherit;
 			cursor: pointer;
@@ -220,10 +253,10 @@
 			align-items: center;
 			justify-content: space-between;
 			padding: 0 10px;
-			background: #CBCBCB;
+			background: #fbfbfb;
 
 			&:hover, &.expanded, &:focus {
-				background: #bebebe;
+				background: #fbfbfb;
 			}
 
 			.dropdown-font-name {
@@ -270,7 +303,7 @@
 			}
 		}
 
-		ul {
+		.font-picker-list {
 			position: absolute;
 			z-index: 1;
 			max-height: 0;
@@ -280,13 +313,21 @@
 			-webkit-overflow-scrolling: touch;
 			margin: 0;
 			padding: 0;
-			background: #EAEAEA;
+			background: #fbfbfb;
 			box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.2);
 			transition: 0.3s;
 
 			&.expanded {
-				max-height: 200px;
+				max-height: 300px;
 			}
+
+            ul {
+                list-style: none;
+                height: 200px!important;
+                max-height: 200px!important;
+                overflow: auto;
+                position: static!important;
+            }
 
 			li {
 				height: 35px;

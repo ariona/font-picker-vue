@@ -31,7 +31,7 @@
 
 		data() {
             return {
-                apiKey: 'AIzaSyAOkdDlx49HCSBdu86oe8AD1Q7piIxlR6k',
+                apiKey: 'AIzaSyBWRHp4IDXAaudSFwz2Vvdz045Zq8XrSwM',
                 pickerSuffix: '',
 				activeFont: this.defaultFont,
 			};
